@@ -1,8 +1,13 @@
-export const Filter = ({title, userFilter}) => {
+import { setFilter } from "components/redux/Reducer";
+import { useDispatch } from "react-redux";
 
-  // handleFilter = ({ target }) => {
-  //   this.props.userFilter(target.value);
-  // };
+export const Filter = ({title}) => {
+
+    const dispatch = useDispatch();
+
+    const handleFilter = ({ target: {value} }) => {
+        dispatch(setFilter(value));
+    };
 
     return (
       <div>
@@ -13,7 +18,7 @@ export const Filter = ({title, userFilter}) => {
           className="form-control"
           id="exampleInputEmail1"
           aria-describedby="emailHelp"
-          onChange={userFilter}
+          onChange={handleFilter}
         />
       </div>
     );

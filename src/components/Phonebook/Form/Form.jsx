@@ -1,30 +1,31 @@
-import { useState } from 'react';
-
-export const Form = ({createUser}) => {
-  // state = {
-  //   name: '',
-  //   number: '',
-  // };
-  const [name, setName] = useState('')
-  const [number, setNumber] = useState('')
-
-  const handleClickName = ({ target }) => {
-    setName(target.value)
-  };
-  const handleClickNumber = ({ target }) => {
-    setNumber(target.value)
-  };
+import { nanoid } from '@reduxjs/toolkit';
+import { creatContacts } from 'components/redux/Reducer';
+import { useDispatch, useSelector } from 'react-redux';
 
 
+export const Form = () => {
+  
+  const { contacts } = useSelector((state) => state);
+  const dispatch = useDispatch();
 
   const onClick = (e) => {
     e.preventDefault();
-    if (!name.trim() || !number.trim()) {
-      return;
+    const form = e.target;
+    const {name, number} = e.target.elements;
+    if (!name.value.trim() || !number.value.trim()) {
+      return form.reset();
     }
-    createUser(name, number);
-    setName('')
-    setNumber('')
+
+    const isAlredyContacts = contacts.find(el => el.name === name.value);
+    if (isAlredyContacts) return alert(`${name.value} is alredy in contacts.`);
+
+    const newContacts = {
+      name: name.value,
+      number: number.value,
+      id: nanoid(),
+    }
+    dispatch(creatContacts(newContacts))
+    form.reset();
   };
 
     return (
@@ -39,8 +40,6 @@ export const Form = ({createUser}) => {
             className="form-control"
             id="exampleInputEmail1"
             aria-describedby="emailHelp"
-            onChange={handleClickName}
-            value={name}
             required
           />
         </div>
@@ -53,8 +52,6 @@ export const Form = ({createUser}) => {
             type="text"
             className="form-control"
             id="exampleInputPassword1"
-            onChange={handleClickNumber}
-            value={number}
             required
           />
         </div>
@@ -65,5 +62,6 @@ export const Form = ({createUser}) => {
           Add contact
         </button>
       </form>
+      
     );
 }
